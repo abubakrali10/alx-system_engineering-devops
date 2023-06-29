@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+# This script is displaying numbers from 1 to 20
+# and prints a specific text for a specific numbers
+
+i=1
+while [[ $i -le 20 ]]; do
+    if [[ $i -eq 4 ]]; then
+        echo "$i"
+        echo "bad luck from China"
+    elif [[ $i -eq 9 ]]; then
+        echo "$i"
+        echo "bad luck from Japan"
+    elif [[ $i -eq 17 ]]; then
+        echo "$i"
+        echo "bad luck from Italy"
+    else
+        echo "$i"
+    fi
+    i=$((i + 1))
+done
