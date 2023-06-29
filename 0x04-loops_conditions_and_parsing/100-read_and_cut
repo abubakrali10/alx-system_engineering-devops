@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+# This script displays username, id and home directory path for the user
+
+while read passwd; do
+    echo "$passwd" | cut -d ":" -f 1,3,6
+done < "/etc/passwd"
