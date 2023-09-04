@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+# this script configuring web server
+
+sudo apt-get -y update
+sudo apt-get -y install nginx
+
+HTML_PATH="/var/www/html"
+ERROR_404_PATH="/usr/share/nginx/html/error_404.html"
+
+echo "Hello World!" | sudo tee "$HTML_PATH/index.html"
+echo "Ceci n'est pas une page" | sudo tee "$ERROR_404_PATH"
+
+NGINX_CONF_PATH="/etc/nginx/sites-available/default"
+
+content=$(cat << 'END_HEREDOC'
+   rewrite ^/redirect_me https://www.youtube.com/shorts/ioJ-H2q38HI permanent;
+   add_header X-Served_By $HOSTNAME;
+
+   error_page 404 /error_404.html
+   location = /error_404.html {
+       root /usr/share/nginx/html;
+       internal;
+   }
+END_HEREDOC
+)
+
+echo -e "$content" | sudo tee -a "$NGINX_CONF_PATH"
+sudo service nginx restart
