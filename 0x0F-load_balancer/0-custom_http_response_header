@@ -12,17 +12,26 @@ echo "Ceci n'est pas une page" | sudo tee "$ERROR_404_PATH"
 
 NGINX_CONF_PATH="/etc/nginx/sites-available/default"
 
-content=$(cat << 'END_HEREDOC'
-   rewrite ^/redirect_me https://www.youtube.com/shorts/ioJ-H2q38HI permanent;
-   add_header X-Served_By $HOSTNAME;
+printf %s "server {
+    listen 80 default_server;
+    listen [::]:80 default_server;
 
-   error_page 404 /error_404.html
-   location = /error_404.html {
-       root /usr/share/nginx/html;
-       internal;
-   }
-END_HEREDOC
-)
+    root $HTML_PATH;
+    index index.html index.htm index.nginx-debian.html;
 
-echo -e "$content" | sudo tee -a "$NGINX_CONF_PATH"
+    server_name _;
+
+    location /redirect_me {
+        rewrite ^/redirect_me https://www.youtube.com/shorts/ioJ-H2q38HI permanent;
+    }
+
+    add_header X-Served-By $HOSTNAME;
+
+    error_page 404 /error_404.html;
+    location = /error_404.html {
+        root /usr/share/nginx/html;
+        internal;
+    }
+}" > $NGINX_CONF_PATH
+
 sudo service nginx restart
