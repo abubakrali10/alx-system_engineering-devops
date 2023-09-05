@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+# This script installs HAproxy load balancer
+
+sudo apt-get -y update
+sudo apt-get -y install haproxy
+
+echo "ENABLED=1" | sudo tee -a /etc/default/haproxy
+
+sudo mv /etc/haproxy/haproxy.cfg{,.original}
+sudo touch /etc/haproxy/haproxy.cfg
+
+HAPROXY_PATH="/etc/haproxy/haproxy.cfg"
+
+printf %s "
+global
+    maxconn 2000
+    log 127.0.0.1 local0 notice
+    user haproxy
+    group haproxy
+
+defaults
+    timeout connect 10s
+    timeout client 30s
+    timeout server 30s
+    log global
+    mode http
+    option httplog
+    option dontlognull
+    retries 3
+    option redispatch
+    maxconn 3000
+
+listen webservers
+    bind 0.0.0.0:80
+    mode http
+    stats enable
+    stats uri /haproxy?stats
+    balance roundrobin
+    option httpclose
+    option forwardfor
+    server 286031-web-01 34.232.69.68:80 check
+    server 286031-web-02 35.174.176.142:80 check
+" >> "$HAPROXY_PATH"
+
+sudo service haproxy start
