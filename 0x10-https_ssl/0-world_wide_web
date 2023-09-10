@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+# Script for dig command
+
+domain="$1"
+subdomain="$2"
+subdomains=("www" "lb-01" "web-01" "web-02")
+
+display_info() {
+	dig "$1.$2" | grep "^$1.$2" | awk -v subd="$1" '{print "The subdomain", subd, "is a", $4, "record and points to", $5}'
+}
+
+if [ $# -eq 1 ]; then
+	for sub in "${subdomains[@]}"; do
+	       	display_info "$sub" "$domain"
+        done
+else
+	display_info "$subdomain" "$domain"
+fi
