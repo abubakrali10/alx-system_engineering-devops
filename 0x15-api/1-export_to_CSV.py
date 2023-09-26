@@ -13,15 +13,8 @@ if __name__ == '__main__':
     completed = [todo["title"] for todo in todos if todo["completed"]]
 
     csv_file_path = f"{u_id}.csv"
-    '''
-    with open(csv_file_path, mode='w') as csv_file:
-        writer = csv.writer(csv_file, quoting=csv.QUOTE_ALL)
-        [writer.writerow(
-            [u_id, user['name'], task['completed'], task['title']]
-        ) for task in todos]
-    '''
     with open(csv_file_path, mode='w') as csv_file:
         for task in todos:
             csv_file.write('"{}","{}","{}","{}"\n'
-                           .format(u_id, user["name"],
+                           .format(u_id, user["username"],
                                    task["completed"], task["title"]))
