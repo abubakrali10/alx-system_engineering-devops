@@ -1,8 +1,8 @@
 #!/usr/bin/python3
 """exports data in the JSON format from an API"""
+import json
 import requests
 import sys
-import json
 
 
 if __name__ == '__main__':
